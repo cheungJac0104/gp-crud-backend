@@ -1,5 +1,6 @@
 package com.example.gp.gp_crud_backend.utilities;
 
+
 // JWTAuthenticationFilter.java
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -19,7 +20,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
     private JWTUtil jwtUtil;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) {
+    public void filter(ContainerRequestContext requestContext)  {
         String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

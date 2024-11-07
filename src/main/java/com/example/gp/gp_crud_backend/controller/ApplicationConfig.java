@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import java.util.Set;
 
+import com.example.gp.gp_crud_backend.utilities.CORSFilter;
 import com.example.gp.gp_crud_backend.utilities.JWTAuthenticationFilter;
 import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 
@@ -16,6 +17,7 @@ import java.util.HashSet;
 @ApplicationPath("/api")
 public class ApplicationConfig extends Application {
     
+    @SuppressWarnings("unused")
     @Inject
     private JWTUtil jwtUtil;
     
@@ -29,6 +31,7 @@ public class ApplicationConfig extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(AuthController.class);
         classes.add(JWTAuthenticationFilter.class);
+        classes.add(CORSFilter.class);
         return classes;
     }
 }
