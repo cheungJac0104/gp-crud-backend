@@ -30,7 +30,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
 
         String token = authHeader.substring("Bearer ".length());
         
-        if (!jwtUtil.validateToken(token)) {
+        if (jwtUtil.validateToken(token).isEmpty()) {
             abortWithUnauthorized(requestContext);
             return;
         }

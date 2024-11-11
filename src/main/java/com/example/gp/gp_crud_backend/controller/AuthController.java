@@ -5,19 +5,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import com.example.gp.gp_crud_backend.requestDTO.LoginRequest;
-import com.example.gp.gp_crud_backend.requestDTO.RegisterRequest;
+import com.example.gp.gp_crud_backend.apiDTO.LoginRequest;
+import com.example.gp.gp_crud_backend.apiDTO.RegisterRequest;
+import com.example.gp.gp_crud_backend.apiDTO.ApiResponse;
 import com.example.gp.gp_crud_backend.service.DonorService;
-import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 
 @Path("/auth")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @ApplicationPath("api")
 public class AuthController {
-
-    @Inject
-    private JWTUtil jwtUtil;
 
     @Inject
     private DonorService donorService;
@@ -28,10 +25,11 @@ public class AuthController {
     public Response login(LoginRequest request) {
         
         try {
+
+            var token = donorService.login(request.username, request.password);
         
-            if (donorService.login(request.username, request.password)) {
-                String token = jwtUtil.generateToken(request.username);
-                return Response.ok(token).build();
+            if (!token.isEmpty()) {
+                return Response.ok(new ApiResponse("Login successful", token)).build();
             } else {
                 return Response.status(Response.Status.UNAUTHORIZED)
                          .entity("Invalid credentials")
@@ -39,8 +37,9 @@ public class AuthController {
             }
         
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                         .entity("Login failed")
+                         .entity(new ApiResponse("Error", e.getMessage()))
                          .build();
         }
 

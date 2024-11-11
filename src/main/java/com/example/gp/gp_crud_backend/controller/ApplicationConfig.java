@@ -4,22 +4,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import jakarta.annotation.PostConstruct;
-import jakarta.inject.Inject;
 import java.util.Set;
 
 import com.example.gp.gp_crud_backend.utilities.CORSFilter;
 import com.example.gp.gp_crud_backend.utilities.JWTAuthenticationFilter;
-import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 
 import java.util.HashSet;
 
 @ApplicationScoped
 @ApplicationPath("/api")
 public class ApplicationConfig extends Application {
-    
-    @SuppressWarnings("unused")
-    @Inject
-    private JWTUtil jwtUtil;
     
     @PostConstruct
     public void init() {
@@ -30,6 +24,8 @@ public class ApplicationConfig extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(AuthController.class);
+        classes.add(UserController.class);
+        classes.add(AdminController.class);
         classes.add(JWTAuthenticationFilter.class);
         classes.add(CORSFilter.class);
         return classes;

@@ -3,45 +3,60 @@ package com.example.gp.gp_crud_backend.utilities;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
 
 @ApplicationScoped
 public class JWTUtil {
 
-    private static final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 86400000; // 24 hours
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String hash_signature) {
+
         return Jwts.builder()
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
                 .setSubject(username)
+                .setAudience(hash_signature)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(key)
+                .base64UrlEncodeWith(Encoders.BASE64URL)
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                .setSigningKey(key)
+            return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
                 .build()
-                .parseClaimsJws(token);
-            return true;
+                .parseClaimsJws(token)
+                .getBody();
         } catch (Exception e) {
-            return false;
+            return null;
         }
     }
 
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    public String getHashSignatureFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getAudience();
     }
 }

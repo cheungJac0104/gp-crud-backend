@@ -7,9 +7,10 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
+import com.example.gp.gp_crud_backend.apiDTO.RegisterRequest;
 import com.example.gp.gp_crud_backend.entity.Donors;
 import com.example.gp.gp_crud_backend.entity.entityEmperor;
-import com.example.gp.gp_crud_backend.requestDTO.RegisterRequest;
+import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 import com.example.gp.gp_crud_backend.utilities.PasswordUtils;
 
 @Stateless
@@ -17,28 +18,33 @@ import com.example.gp.gp_crud_backend.utilities.PasswordUtils;
 public class DonorService {
 
     @Inject
+    private JWTUtil jwtUtil;
+
+    @Inject
     private entityEmperor emperor;
 
     @Inject
     private EmailService emailService;
     
-    public boolean login(String username, String password) {
+    public String login(String username, String password) {
         entityEmperor.ColumnValuePair columnValuePair = new entityEmperor.ColumnValuePair("username", username);
         var columns = List.of(columnValuePair);
         List<Donors> donors = emperor.donorFindByColumns(columns);
 
-        if(donors.isEmpty()) return false;
+        if(donors.isEmpty()) return "";
         for (Donors drs : donors) {
             String storedSalt = drs.salt; // Assuming you have a salt field in your Donor entity
             String storedEncryptedPassword = drs.password_hash; // Assuming you have an encrypted password field
 
             String encryptedPassword = PasswordUtils.encryptPassword(password, storedSalt);
             if (storedEncryptedPassword.equals(encryptedPassword)) {
-                return true;
+
+                var token = jwtUtil.generateToken(username,encryptedPassword);
+                return token;
             }
         }
 
-        return false;
+        return "";
     } 
 
     public boolean register(RegisterRequest request) {
@@ -64,7 +70,7 @@ public class DonorService {
         {
             emailService.sendAccountCreatedEmail(to, subject, password);
         }  
-        return emperor.insertDonors(donor);
+        return _rtn;
     }
 
     

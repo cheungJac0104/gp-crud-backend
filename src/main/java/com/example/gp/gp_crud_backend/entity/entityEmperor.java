@@ -52,6 +52,21 @@ public class entityEmperor {
     }
 
 
+    public Donation_Programs getDonation_ProgramsById(int program_id) {
+        try {
+            TypedQuery<Donation_Programs> query = entityManager.createQuery("select d from Donation_Programs d where d.program_id = :id", Donation_Programs.class);
+            query.setParameter("id", program_id);
+            Donation_Programs donation_Programs = query.getSingleResult();
+            return donation_Programs;
+        } catch (PersistenceException e) {
+            System.out.println("Error retrieving donation program: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     //endregion
 
     //region Get
