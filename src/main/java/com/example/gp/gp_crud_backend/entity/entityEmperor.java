@@ -1,6 +1,7 @@
 package com.example.gp.gp_crud_backend.entity;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -139,6 +140,7 @@ public class entityEmperor {
 
     //region Insert
 
+    @Transactional
     public boolean insertDonors(Donors donors) {
         try {
             entityManager.persist(donors);
@@ -156,6 +158,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void insertDonation_Programs(Donation_Programs donation_Programs) {
         try {
             entityManager.persist(donation_Programs);
@@ -170,6 +173,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void insertDonations(Donations donations) {
         try {
             entityManager.persist(donations);
@@ -185,6 +189,7 @@ public class entityEmperor {
         
     }
 
+    @Transactional
     public void insertAcknowledgments(Acknowledgments acknowledgments) {  
         try {
             entityManager.persist(acknowledgments);
@@ -200,6 +205,7 @@ public class entityEmperor {
         
     }
 
+    @Transactional
     public void insertemail_notification(email_notification emailNotification) {
         try {
             entityManager.persist(emailNotification);
@@ -218,6 +224,7 @@ public class entityEmperor {
 
     //region Update
 
+    @Transactional
     public void updateDonors(Donors donors) {
         try {
             entityManager.merge(donors);
@@ -232,6 +239,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void updateDonation_Programs(Donation_Programs donation_Programs) {
         try {
             entityManager.merge(donation_Programs);
@@ -246,6 +254,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void updateDonations(Donations donations) {
         try {
             entityManager.merge(donations);
@@ -260,6 +269,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void updateAcknowledgments(Acknowledgments acknowledgments) {
         try {
             entityManager.merge(acknowledgments);
@@ -274,6 +284,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void updateemail_notification(email_notification emailNotification) {
         try {
             entityManager.merge(emailNotification);
@@ -292,6 +303,7 @@ public class entityEmperor {
     
     // region Delete
 
+    @Transactional
     public void deleteDonors(Donors donors) {
         try {
             entityManager.remove(donors);
@@ -306,6 +318,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void deleteDonation_Programs(Donation_Programs donation_Programs) {
         try {
             entityManager.remove(donation_Programs);
@@ -320,6 +333,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void deleteDonations(Donations donations) {
         try {
             entityManager.remove(donations);
@@ -334,6 +348,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void deleteAcknowledgments(Acknowledgments acknowledgments) {
         try {
             entityManager.remove(acknowledgments);
@@ -348,6 +363,7 @@ public class entityEmperor {
         }
     }
 
+    @Transactional
     public void deleteemail_notification(email_notification emailNotification) {
         try {
             entityManager.remove(emailNotification);

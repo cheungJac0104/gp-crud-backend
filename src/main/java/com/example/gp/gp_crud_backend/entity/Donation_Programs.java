@@ -16,4 +16,5 @@ public class Donation_Programs {
     public String start_date;
     public String end_date;
     public String status;
+    public int amount;
 }

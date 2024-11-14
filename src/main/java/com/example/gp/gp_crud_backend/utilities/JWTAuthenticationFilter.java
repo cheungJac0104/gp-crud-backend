@@ -1,6 +1,8 @@
 package com.example.gp.gp_crud_backend.utilities;
 
 
+import java.util.Optional;
+
 // JWTAuthenticationFilter.java
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -29,11 +31,29 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
         }
 
         String token = authHeader.substring("Bearer ".length());
-        
-        if (jwtUtil.validateToken(token).isEmpty()) {
+
+        // Validate token first
+        var user = jwtUtil.validateToken(token);
+        if (user.isEmpty()) {
             abortWithUnauthorized(requestContext);
             return;
         }
+        
+        // Check cache if token valid
+
+        var user_hash = jwtUtil.getHashSignatureFromToken(token);
+        var user_name = jwtUtil.getUsernameFromToken(token);
+        // Check if user is cached in the cache
+        Optional<String> cachedUser = UserCache.getUser(user_hash);
+        if (cachedUser.isPresent()) {
+            // User is cached, proceed with the request
+            return;
+        }
+
+        
+
+        // Cache the token and user
+        UserCache.addHash(user_hash, user_name);
     }
 
     private void abortWithUnauthorized(ContainerRequestContext requestContext) {

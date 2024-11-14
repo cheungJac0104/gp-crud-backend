@@ -9,8 +9,6 @@ import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 import jakarta.inject.Inject;
 
 public class DonationProgramService {
-    @Inject
-    private JWTUtil jwtUtil;
 
     @Inject
     private entityEmperor emperor;
@@ -32,9 +30,13 @@ public class DonationProgramService {
         
     }
 
-    public boolean updateDonationProgram(int program_id) {
+    public boolean updateDonationProgram(Donation_Programs donationProgram) {
         try {
-            Donation_Programs donationProgram = emperor.getDonation_ProgramsById(program_id);
+            Donation_Programs dp_rtn = emperor.getDonation_ProgramsById(donationProgram.program_id);
+            if (dp_rtn == null) {
+                System.out.println("No donation program found with id: " + donationProgram.program_id);
+                return false;
+            }
             emperor.updateDonation_Programs(donationProgram);
             return true;
         } catch (Exception e) {
@@ -47,6 +49,10 @@ public class DonationProgramService {
     public boolean deleteDonationProgram(int program_id) {
         try {
             Donation_Programs donationProgram = emperor.getDonation_ProgramsById(program_id);
+            if (donationProgram == null) {
+                System.out.println("No donation program found with id: " + program_id);
+                return false;
+            }
             emperor.deleteDonation_Programs(donationProgram);
             return true;
         } catch (Exception e) {
