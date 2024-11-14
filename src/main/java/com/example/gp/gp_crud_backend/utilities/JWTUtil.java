@@ -38,7 +38,7 @@ public class JWTUtil {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (Exception e) {
-            return null;
+            throw new IllegalArgumentException("User claims are empty or null");
         }
     }
 
