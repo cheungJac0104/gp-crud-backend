@@ -16,12 +16,12 @@ public class JWTUtil {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 86400000; // 24 hours
 
-    public String generateToken(String username, String hash_signature) {
+    public String generateToken(int user_id, String hash_signature) {
 
         return Jwts.builder()
                 .setHeaderParam("alg", "HS256")
                 .setHeaderParam("typ", "JWT")
-                .setSubject(username)
+                .setSubject(String.valueOf(user_id))
                 .setAudience(hash_signature)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

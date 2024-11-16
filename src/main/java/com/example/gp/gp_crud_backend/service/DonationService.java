@@ -53,9 +53,7 @@ public class DonationService {
             if(donor == null) return null;
             var donor_id = donor.donor_id;
 
-            return getDonations().stream()
-               .filter(d -> d.donor_id == donor_id)
-               .toList();
+            return emperor.getDonationsById(donor_id);
             
         } catch (Exception e) {
             // TODO: handle exception

@@ -6,6 +6,7 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.example.gp.gp_crud_backend.apiDTO.RegisterRequest;
 import com.example.gp.gp_crud_backend.entity.Donors;
@@ -27,7 +28,7 @@ public class DonorService {
     @Inject
     private EmailService emailService;
     
-    public String login(String username, String password) {
+    public String login(String username, String password) throws InterruptedException, ExecutionException {
         entityEmperor.ColumnValuePair columnValuePair = new entityEmperor.ColumnValuePair("username", username);
         var columns = List.of(columnValuePair);
         List<Donors> donors = emperor.donorFindByColumns(columns);
@@ -40,7 +41,7 @@ public class DonorService {
             String encryptedPassword = PasswordUtils.encryptPassword(password, storedSalt);
             if (storedEncryptedPassword.equals(encryptedPassword)) {
 
-                var token = jwtUtil.generateToken(username,encryptedPassword);
+                var token = jwtUtil.generateToken(drs.donor_id,encryptedPassword);
                 return token;
             }
         }
@@ -75,7 +76,7 @@ public class DonorService {
     }
 
 
-    public Donors getDonor(){
+    public Donors getDonor() throws InterruptedException, ExecutionException{
         var hash = UserCache.getCurrentHash().get();
             if (hash == null) return null;
 

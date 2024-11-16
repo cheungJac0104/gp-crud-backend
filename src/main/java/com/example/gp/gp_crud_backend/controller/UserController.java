@@ -3,6 +3,7 @@ package com.example.gp.gp_crud_backend.controller;
 
 import com.example.gp.gp_crud_backend.apiDTO.ApiResponse;
 import com.example.gp.gp_crud_backend.entity.Donations;
+import com.example.gp.gp_crud_backend.service.AcknowledgmentService;
 import com.example.gp.gp_crud_backend.service.DonationProgramService;
 import com.example.gp.gp_crud_backend.service.DonationService;
 import com.example.gp.gp_crud_backend.service.DonorService;
@@ -37,6 +38,9 @@ public class UserController {
     @Inject
     private DonationService donationService;
 
+    @Inject
+    private AcknowledgmentService acknowledgmentService;
+
 
     @GET
     @Path("/getDonationProgram")
@@ -68,5 +72,29 @@ public class UserController {
         } catch (Exception e) {}
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
-    
+
+    @GET
+    @Path("/getDonationsByDonor")
+    public Response getDonationsByDonor() {
+        try {
+            var donations = donationService.getDonationsByDonor();
+            return Response.ok(new ApiResponse("Get Donations Record Success", donations)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path("/getAcknowledgmentsByDonor")
+    public Response getAcknowledgmentsByDonor() {
+        try {
+            var donations = donationService.getDonationsByDonor();
+            var acknowledgments = acknowledgmentService.getAcknowledgments(donations);
+            return Response.ok(new ApiResponse("Get Acknowledgments Record Success", acknowledgments)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

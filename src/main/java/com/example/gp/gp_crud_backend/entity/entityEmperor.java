@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RequestScoped
 public class entityEmperor {
@@ -12,7 +13,7 @@ public class entityEmperor {
     @PersistenceContext
     private EntityManager entityManager;
 
-    //region GetOne
+    //region GetByColumnNames
     public List<Donors> donorFindByColumns(List<ColumnValuePair> columnValuePairs) {
         try {
             StringBuilder queryBuilder = new StringBuilder("select d from Donors d where ");
@@ -67,7 +68,24 @@ public class entityEmperor {
         }
     }
 
-
+    public List<Donations> getDonationsById(int donor_id) {
+        try {
+            TypedQuery<Donations> query = entityManager.createQuery("select d from Donations d where d.donor_id = :id", Donations.class);
+            query.setParameter("id", donor_id);
+            List<Donations> donations = query.getResultList();
+            return donations;
+        } catch (PersistenceException e) {
+            System.out.println("Error retrieving donations: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving donations: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+            return null;
+        }
+    }
     //endregion
 
     //region Get
