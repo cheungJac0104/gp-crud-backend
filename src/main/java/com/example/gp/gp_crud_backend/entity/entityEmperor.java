@@ -141,19 +141,6 @@ public class entityEmperor {
         }
     }
 
-    public List<email_notification> getemail_notification() {
-        try {
-            TypedQuery<email_notification> query = entityManager.createQuery("select d from email_notification d", email_notification.class);
-            List<email_notification> emailNotification = query.getResultList();
-            return emailNotification;
-        } catch (PersistenceException e) {
-            System.out.println("Error retrieving email notification: " + e.getMessage());
-            // Optionally, log the stack trace or handle the exception further
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     //endregion
 
     //region Insert
@@ -223,20 +210,6 @@ public class entityEmperor {
         
     }
 
-    @Transactional
-    public void insertemail_notification(email_notification emailNotification) {
-        try {
-            entityManager.persist(emailNotification);
-            System.out.println("Email notification inserted successfully.");
-        } catch (PersistenceException e) {
-            System.err.println("Error inserting email notification: " + e.getMessage());
-            // Optionally, log the stack trace or handle the exception further
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("An unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     //endregion
 
@@ -298,21 +271,6 @@ public class entityEmperor {
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println("Error updating acknowledgment: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    @Transactional
-    public void updateemail_notification(email_notification emailNotification) {
-        try {
-            entityManager.merge(emailNotification);
-            System.out.println("Email notification updated successfully.");
-        } catch (PersistenceException e) {
-            System.out.println("Error updating email notification: " + e.getMessage());
-            // Optionally, log the stack trace or handle the exception further
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Error updating email notification: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -381,20 +339,6 @@ public class entityEmperor {
         }
     }
 
-    @Transactional
-    public void deleteemail_notification(email_notification emailNotification) {
-        try {
-            entityManager.remove(emailNotification);
-            System.out.println("Email notification deleted successfully.");
-        } catch (PersistenceException e) {
-            System.out.println("Error deleting email notification: " + e.getMessage());
-            // Optionally, log the stack trace or handle the exception further
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Error deleting email notification: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
     //endregion
 
 
