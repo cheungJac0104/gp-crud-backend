@@ -2,6 +2,7 @@ package com.example.gp.gp_crud_backend.controller;
 
 
 import com.example.gp.gp_crud_backend.apiDTO.ApiResponse;
+import com.example.gp.gp_crud_backend.entity.Donations;
 import com.example.gp.gp_crud_backend.service.DonationProgramService;
 import com.example.gp.gp_crud_backend.service.DonationService;
 import com.example.gp.gp_crud_backend.service.DonorService;
@@ -49,6 +50,23 @@ public class UserController {
         } catch (Exception e) {}
 
             return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @POST
+    @Path("/donate")
+    public Response donate(Donations donation) {
+        try {
+
+            if(donationService.donation(donation)){
+                return Response.ok(new ApiResponse("Donation Success", donation)).build();
+            }
+            else
+            {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+
+        } catch (Exception e) {}
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
     
 }

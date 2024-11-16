@@ -35,6 +35,10 @@ public class UserCache {
         return getUser(latestHash);
     }
 
+    public static Optional<String> getCurrentHash() {
+        return Optional.ofNullable(latestHash);
+    }
+
     public static void removeHash(String hash) {
         userhash_Cache.remove(hash);
     }

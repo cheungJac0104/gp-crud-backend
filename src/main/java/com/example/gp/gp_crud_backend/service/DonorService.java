@@ -12,6 +12,7 @@ import com.example.gp.gp_crud_backend.entity.Donors;
 import com.example.gp.gp_crud_backend.entity.entityEmperor;
 import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 import com.example.gp.gp_crud_backend.utilities.PasswordUtils;
+import com.example.gp.gp_crud_backend.utilities.UserCache;
 
 @Stateless
 @Dependent
@@ -71,6 +72,17 @@ public class DonorService {
             emailService.sendAccountCreatedEmail(to, subject, password);
         }  
         return _rtn;
+    }
+
+
+    public Donors getDonor(){
+        var hash = UserCache.getCurrentHash().get();
+            if (hash == null) return null;
+
+            // System.out.println("password hash: " + hash);
+            var donor = emperor.donorFindByColumns(List.of(new entityEmperor.ColumnValuePair("password_hash", hash)));
+            if(donor.size() == 0) return null;
+            return donor.get(0);
     }
 
     
