@@ -2,7 +2,9 @@ package com.example.gp.gp_crud_backend.controller;
 
 
 import com.example.gp.gp_crud_backend.apiDTO.ApiResponse;
+import com.example.gp.gp_crud_backend.apiDTO.ProfileRequest;
 import com.example.gp.gp_crud_backend.entity.Donations;
+import com.example.gp.gp_crud_backend.entity.Donors;
 import com.example.gp.gp_crud_backend.service.AcknowledgmentService;
 import com.example.gp.gp_crud_backend.service.DonationProgramService;
 import com.example.gp.gp_crud_backend.service.DonationService;
@@ -15,6 +17,7 @@ import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.Produces;
@@ -92,6 +95,35 @@ public class UserController {
             var donations = donationService.getDonationsByDonor();
             var acknowledgments = acknowledgmentService.getAcknowledgments(donations);
             return Response.ok(new ApiResponse("Get Acknowledgments Record Success", acknowledgments)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path("/getDonorProfile")
+    public Response getDonorProfile() {
+        try {
+            var donor = donorService.getDonor();
+            return Response.ok(new ApiResponse("Get Donor Profile Success", donor)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PUT
+    @Path("/updateDonorProfile")
+    public Response updateDonorProfile(ProfileRequest request) {
+        try {
+            if(donorService.updateDonor(request.donor, request.new_password)){
+                return Response.ok(new ApiResponse("Update Donor Profile Success", request.donor)).build();
+            }
+            else
+            {
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

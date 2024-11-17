@@ -86,5 +86,19 @@ public class DonorService {
             return donor.get(0);
     }
 
+    public boolean updateDonor(Donors donor, String new_password) {
+        try {
+            if(!new_password.isBlank() && !new_password.isEmpty())
+            {
+                donor.password_hash = PasswordUtils.encryptPassword(new_password, donor.salt);
+            }      
+            emperor.updateDonors(donor);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     
 }
