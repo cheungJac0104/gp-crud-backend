@@ -2,6 +2,7 @@ package com.example.gp.gp_crud_backend.apiDTO;
 
 public class AppreciationRequest {
     public int ack_id;
+    public int donation_id;
     public String ack_message;
     public int amount;
     public String donorEmail;

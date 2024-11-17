@@ -165,6 +165,7 @@ public class AdminController {
         try {
             var ack = new Acknowledgments();
             ack.ack_id = request.ack_id;
+            ack.donation_id = request.donation_id;
             ack.date = new Date();
             ack.message = request.ack_message;
 
