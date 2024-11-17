@@ -6,10 +6,13 @@ import java.util.List;
 import com.example.gp.gp_crud_backend.entity.Donations;
 import com.example.gp.gp_crud_backend.entity.Acknowledgments;
 import com.example.gp.gp_crud_backend.entity.entityEmperor;
-import com.example.gp.gp_crud_backend.utilities.UserCache;
 
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Stateless
+@Dependent
 public class DonationService {
 
 

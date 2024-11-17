@@ -13,6 +13,7 @@ import com.example.gp.gp_crud_backend.entity.Donors;
 import com.example.gp.gp_crud_backend.entity.entityEmperor;
 import com.example.gp.gp_crud_backend.utilities.JWTUtil;
 import com.example.gp.gp_crud_backend.utilities.PasswordUtils;
+import com.example.gp.gp_crud_backend.utilities.UserActivity;
 import com.example.gp.gp_crud_backend.utilities.UserCache;
 
 @Stateless
@@ -27,6 +28,9 @@ public class DonorService {
 
     @Inject
     private EmailService emailService;
+
+    @Inject
+    private UserActivityService userActivityService;
     
     public String login(String username, String password) throws InterruptedException, ExecutionException {
         entityEmperor.ColumnValuePair columnValuePair = new entityEmperor.ColumnValuePair("username", username);
@@ -40,6 +44,8 @@ public class DonorService {
 
             String encryptedPassword = PasswordUtils.encryptPassword(password, storedSalt);
             if (storedEncryptedPassword.equals(encryptedPassword)) {
+
+                userActivityService.logUserActivity(drs, UserActivity.LOGIN);
 
                 var token = jwtUtil.generateToken(drs.donor_id,encryptedPassword);
                 return token;
@@ -100,5 +106,15 @@ public class DonorService {
         }
     }
 
-    
+    public List<Donors> getDonors() {
+        try {
+            List<Donors> donors = emperor.getDonors();
+            return donors;
+        } catch (Exception e) {
+            System.out.println("Error retrieving donors: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

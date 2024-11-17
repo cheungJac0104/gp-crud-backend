@@ -4,12 +4,13 @@ package com.example.gp.gp_crud_backend.controller;
 import com.example.gp.gp_crud_backend.apiDTO.ApiResponse;
 import com.example.gp.gp_crud_backend.apiDTO.ProfileRequest;
 import com.example.gp.gp_crud_backend.entity.Donations;
-import com.example.gp.gp_crud_backend.entity.Donors;
 import com.example.gp.gp_crud_backend.service.AcknowledgmentService;
 import com.example.gp.gp_crud_backend.service.DonationProgramService;
 import com.example.gp.gp_crud_backend.service.DonationService;
 import com.example.gp.gp_crud_backend.service.DonorService;
+import com.example.gp.gp_crud_backend.service.UserActivityService;
 import com.example.gp.gp_crud_backend.utilities.Secured;
+import com.example.gp.gp_crud_backend.utilities.UserActivity;
 
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -44,6 +45,9 @@ public class UserController {
     @Inject
     private AcknowledgmentService acknowledgmentService;
 
+    @Inject
+    private UserActivityService userActivityService;
+
 
     @GET
     @Path("/getDonationProgram")
@@ -65,6 +69,10 @@ public class UserController {
         try {
 
             if(donationService.donation(donation)){
+                var donor = donorService.getDonor();
+
+                userActivityService.logUserActivity(donor, UserActivity.DONATION);
+
                 return Response.ok(new ApiResponse("Donation Success", donation)).build();
             }
             else
@@ -118,6 +126,10 @@ public class UserController {
     public Response updateDonorProfile(ProfileRequest request) {
         try {
             if(donorService.updateDonor(request.donor, request.new_password)){
+                var donor = donorService.getDonor();
+
+                userActivityService.logUserActivity(donor, UserActivity.UPDATE_PROFILE);
+
                 return Response.ok(new ApiResponse("Update Donor Profile Success", request.donor)).build();
             }
             else

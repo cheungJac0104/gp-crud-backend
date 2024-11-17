@@ -5,8 +5,12 @@ import java.util.List;
 import com.example.gp.gp_crud_backend.entity.Donation_Programs;
 import com.example.gp.gp_crud_backend.entity.entityEmperor;
 
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Stateless
+@Dependent
 public class DonationProgramService {
 
     @Inject

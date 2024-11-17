@@ -141,6 +141,23 @@ public class entityEmperor {
         }
     }
 
+    public List<UserActivity> getUserActivities() {
+        try {
+            TypedQuery<UserActivity> query = entityManager.createQuery("select d from UserActivity d", UserActivity.class);
+            List<UserActivity> userActivities = query.getResultList();
+            return userActivities;
+        } catch (PersistenceException e) {
+            System.out.println("Error retrieving user activities: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error retrieving user activities: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //endregion
 
     //region Insert
@@ -211,6 +228,20 @@ public class entityEmperor {
     }
 
 
+    @Transactional
+    public void insertUserActivities(UserActivity userActivities) {
+        try {
+            entityManager.persist(userActivities);
+            System.out.println("User activity inserted successfully.");
+        } catch (PersistenceException e) {
+            System.out.println("Error inserting user activity: " + e.getMessage());
+            // Optionally, log the stack trace or handle the exception further
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Error inserting user activity: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     //endregion
 
     //region Update

@@ -51,14 +51,23 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
         }
 
         
+        var ip_address = getClientIp(requestContext);
 
         // Cache the token and user
-        UserCache.addHash(user_hash, user_name);
+        UserCache.addHash(user_hash, user_name, ip_address);
     }
 
     private void abortWithUnauthorized(ContainerRequestContext requestContext) {
         requestContext.abortWith(
             Response.status(Response.Status.UNAUTHORIZED)
                    .build());
+    }
+
+    private String getClientIp(ContainerRequestContext requestContext) {
+        String ipAddress = requestContext.getHeaderString("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty()) {
+            ipAddress = requestContext.getUriInfo().getRequestUri().getHost();
+        }
+        return ipAddress;
     }
 }

@@ -16,8 +16,8 @@ public class UserCache {
         scheduler.scheduleAtFixedRate(UserCache::removeExpiredEntries, EXPIRATION_TIME, EXPIRATION_TIME, TimeUnit.MINUTES);
     }
 
-    public static void addHash(String hash, String user) {
-        userhash_Cache.put(hash, new CacheEntry(user, System.currentTimeMillis()));
+    public static void addHash(String hash, String user, String ip_address) {
+        userhash_Cache.put(hash, new CacheEntry(user, ip_address,System.currentTimeMillis()));
         latestHash = hash;
     }
 
@@ -31,12 +31,25 @@ public class UserCache {
         return Optional.empty();
     }
 
+    public static Optional<String> getIpAddress(String hash) {
+        CacheEntry entry = userhash_Cache.get(hash);
+        if (entry != null && !entry.isExpired()) {
+            return Optional.of(entry.getIpAddress());
+        }
+        userhash_Cache.remove(hash);
+        return Optional.empty();
+    }
+
     public static Optional<String> getCurrentUser() {
         return getUser(latestHash);
     }
 
     public static Optional<String> getCurrentHash() {
         return Optional.ofNullable(latestHash);
+    }
+
+    public static Optional<String> getCurrentIpAddress() {
+        return getIpAddress(latestHash);
     }
 
     public static void removeHash(String hash) {
@@ -50,15 +63,21 @@ public class UserCache {
 
     private static class CacheEntry {
         private final String user;
+        private final String ip_address;
         private final long timestamp;
 
-        CacheEntry(String user, long timestamp) {
+        CacheEntry(String user, String ip_address,long timestamp) {
             this.user = user;
+            this.ip_address = ip_address;
             this.timestamp = timestamp;
         }
 
         String getUser() {
             return user;
+        }
+
+        String getIpAddress() {
+            return ip_address;
         }
 
         boolean isExpired() {

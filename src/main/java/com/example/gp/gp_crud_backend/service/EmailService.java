@@ -7,6 +7,12 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
+
+import com.example.gp.gp_crud_backend.apiDTO.AppreciationRequest;
+
+import io.vavr.Tuple;
+import io.vavr.Tuple3;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -21,17 +27,11 @@ public class EmailService {
     }
 
     public void sendAccountCreatedEmail(String to, String subject, String password) {
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        var smtpProperties = initializeSmtpProperties();
 
-        // Use App Password instead of regular password
-        final String username = "t7105278@gmail.com";
-        final String appPassword = "ntjkbbnrxhrmhnco"; // Generate this from Google Account
+        var props = smtpProperties._1;
+        var username = smtpProperties._2;
+        var appPassword = smtpProperties._3;
 
         try {
             Session session = Session.getInstance(props, new Authenticator() {
@@ -62,6 +62,44 @@ public class EmailService {
         }
     }
 
+    public void sendAppreciationEmail(String to, String subject, AppreciationRequest request) {
+        var smtpProperties = initializeSmtpProperties();
+
+        var props = smtpProperties._1;
+        var username = smtpProperties._2;
+        var appPassword = smtpProperties._3;
+
+        try {
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, appPassword);
+                }
+            });
+
+            // Enable debug mode if needed
+            // session.setDebug(true);
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.setSubject(subject);
+
+            // Load HTML template
+            String htmlBody = loadHtmlTemplate("/donatee_appreciation.html"); // Update path for deployment
+            htmlBody = replacePlaceholder(htmlBody, "${customMessage}", request.ack_message);
+            htmlBody = replacePlaceholder(htmlBody, "${donationAmount}", String.valueOf(request.amount));
+            htmlBody = replacePlaceholder(htmlBody, "${donorName}", request.donorName);
+            htmlBody = replacePlaceholder(htmlBody, "${donationProgram}", request.program_name);
+
+            message.setContent(htmlBody, "text/html; charset=utf-8");
+
+            Transport.send(message);
+        } catch (MessagingException e) {
+            System.out.println("Error sending email: " + e.getMessage());
+            e.printStackTrace(); // Add this for better debugging
+        }
+    }
     // Update the loadHtmlTemplate method for deployment
 private String loadHtmlTemplate(String templatePath) {
     try {
@@ -77,5 +115,22 @@ private String loadHtmlTemplate(String templatePath) {
         return ""; // Or handle the error appropriately
     }
 }
+
+private Tuple3<Properties, String, String> initializeSmtpProperties() {
+    Properties props = new Properties();
+    props.put("mail.smtp.host", "smtp.gmail.com");
+    props.put("mail.smtp.port", "587");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+    props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
+    // Use App Password instead of regular password
+    final String username = "t7105278@gmail.com";
+    final String appPassword = "ntjkbbnrxhrmhnco"; // Generate this from Google Account
+
+    return Tuple.of(props, username, appPassword);
+}
+
 }
 

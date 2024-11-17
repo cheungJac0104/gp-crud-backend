@@ -9,8 +9,12 @@ import java.util.stream.Collectors;
 import com.example.gp.gp_crud_backend.entity.Acknowledgments;
 import com.example.gp.gp_crud_backend.entity.Donations;
 
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 
+@Stateless
+@Dependent
 public class AcknowledgmentService {
 
     @Inject
@@ -33,4 +37,16 @@ public class AcknowledgmentService {
 
     }
     
+
+    public boolean UpdateAcknowledgments(Acknowledgments ack) {
+        try {
+            emperor.updateAcknowledgments(ack);
+            return true;
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            System.out.println("Error updating acknowledgment: " + e.getMessage());
+            return false;
+        }
+    }
 }
